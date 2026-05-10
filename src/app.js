@@ -1,7 +1,7 @@
 const server = require("express")
 const app = server()
 
-// hello
+
 
 app.post("/user",(req,res)=>{
     res.send("Yes that's done")
