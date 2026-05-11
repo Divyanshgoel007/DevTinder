@@ -28,7 +28,13 @@ app.get("/user",(req,res)=>{
 //     res.send("Yes that's done")
 // })
 
-
+app.get("/hello",(req,res)=>{
+    //res.send("hello ")
+    next();
+},
+(req,res)=>{
+    res.send("hello ")
+})
 //use saari http API ko access karta hai isliye hume alg alg http request send karni hoti hai
 app.use("/hello",(req,res)=>{
     res.send("hello ")
