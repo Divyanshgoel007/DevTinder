@@ -1,45 +1,34 @@
 const server = require("express")
 const app = server()
+const connectDB = require("./config/database")
 
 
+const User = require("./models/User")
 
-app.post("/user",(req,res)=>{
-    res.send("Yes that's done")
+
+app.post("/signup",async(req,res)=>{
+    const user = new User({
+        firstName:"noni",
+        lastName:"Goel",
+        email:"goeldivyansh@gmail.com",
+        password:"divyans@123",
+        age:19
+    })
+    try{
+        await user.save()
+        res.send("Connected")
+    }catch(err){
+        console.log("Data not successfully saved",err)
+    }
 })
 
-app.delete("/user",(req,res)=>{    
-    res.send("Yes that's done")
+connectDB()
+.then(()=>{
+    console.log("Database connected successfully")
 })
-
-
-app.patch(/^\/us?er$/,(req,res)=>{    // here if we will write user or uer it will work s is optional   this is used by  regx here if we add + so kitne bi s laga sakte hai 
-    res.send("Yes that's done")
+.catch((err)=>{
+    console.error("Database connection failed")
 })
-
-
-app.get("/user",(req,res)=>{
-    console.log(req.query)
-    res.send("Yes that's done")
-})
-
-
-// app.get("/user/:ID/:name/:password",(req,res)=>{
-//     console.log(req.params)
-//     res.send("Yes that's done")
-// })
-
-app.get("/hello",(req,res)=>{
-    //res.send("hello ")
-    next();
-},
-(req,res)=>{
-    res.send("hello ")
-})
-//use saari http API ko access karta hai isliye hume alg alg http request send karni hoti hai
-app.use("/hello",(req,res)=>{
-    res.send("hello ")
-})
-
 
 app.listen(2211,()=>{
     console.log("Server is running perfectly")
