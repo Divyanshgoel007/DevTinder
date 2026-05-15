@@ -1,16 +1,26 @@
 const server = require("express")
 const app = server()
 const connectDB = require("./config/database")
-
+const bcrypt = require("bcrypt")
 
 const User = require("./models/User")
-
+const {validtateSignup}=require("./utils/validation")
 app.use(server.json())
 
 //signup request
 app.post("/signup",async(req,res)=>{
-    const user = new User(req.body)
-    try{
+        try{
+    const{firstName,lastName,email,password}=req.body
+    validtateSignup(req)
+
+    const passwordHash = await bcrypt.hash(password,10)
+    const user = new User({
+        firstName,
+        lastName,
+        email,
+        password:passwordHash
+    })
+
         await user.save()
         res.send("Data successfully saved")
     }catch(err){
@@ -101,7 +111,25 @@ app.patch("/update", async (req, res) => {
     }
 })
 
+app.post("/login",async(req,res)=>{
+    try{
+        const {email,password}=req.body
+        const user = await User.findOne({email:email})
 
+        if(!user){
+            throw new Error("Invalid credentials")
+        }
+        const isPasswordValid = await bcrypt.compare(password,user.password)
+        if(isPasswordValid){
+            res.send("User Login Successfully")
+        }else{
+            throw new Error("Invalid credentials")
+        }
+    }    
+    catch(err){
+        res.status(404).send(err.message)
+    } 
+})
 
 
 connectDB()
