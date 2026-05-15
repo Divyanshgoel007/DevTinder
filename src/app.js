@@ -12,7 +12,7 @@ app.post("/signup",async(req,res)=>{
     const user = new User(req.body)
     try{
         await user.save()
-        res.send("Connected")
+        res.send("Data successfully saved")
     }catch(err){
         console.log("Data not successfully saved",err)
     }
@@ -63,18 +63,43 @@ app.delete("/delete",async(req,res)=>{
 })
 
 //updating the user
-app.patch("/update",async(req,res)=>{
-    const userId=req.body.userId
-    const data=req.body
-    try{
-        const user = await User.findByIdAndUpdate({_id:userId},data)
-        res.send("user updated successfully")
+app.patch("/update", async (req, res) => {
+    try {
+        const userId = req.body.userId
+        const data = req.body
+        const ALLOWED_UPDATES = [
+            "age",
+            "skills",
+            "gender",
+            "about",
+            "password"
+        ]
+        const updates = Object.keys(data).filter(
+            (k) => k !== "userId"
+        )
+        const isAllowed = updates.every((k) =>
+            ALLOWED_UPDATES.includes(k)
+        )
+        if (!isAllowed) {
+            return res.status(400).send("Update not allowed")
+        }
+        const user = await User.findByIdAndUpdate(
+            userId,
+            data,
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+        if (!user) {
+            return res.status(404).send("User not found")
+        }
+        res.send(user)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err.message)
     }
-    catch(err){
-        res.status(404).send("Something Went Wrong")
-    }     
 })
-
 
 
 
