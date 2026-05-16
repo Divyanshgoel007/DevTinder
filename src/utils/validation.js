@@ -12,4 +12,4 @@ const validtateSignup=((req)=>{
          throw new Error("Enter the strong password")
     }
 })
-module.exports={validtateSignup}  
+module.exports={validtateSignup,}  
