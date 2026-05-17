@@ -53,7 +53,7 @@ profileRouter.patch("/profile/password",userAuth,async(req,res)=>{
         res.send("Password updated successfully")
     }
     catch(err){
-        res.status(404).send("Error: "+err.message)//kjh
+        res.status(404).send("Error: "+err.message)
     }
 })
 
