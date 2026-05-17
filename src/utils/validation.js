@@ -12,4 +12,14 @@ const validtateSignup=((req)=>{
          throw new Error("Enter the strong password")
     }
 })
-module.exports={validtateSignup,}  
+
+
+const updatesAllowed = ((req)=>{
+    const AllowedUpdates=["firstName","lastName","gender","skills","about","age"]
+
+    const valid = Object.keys(req.body).every(field=>{
+        return AllowedUpdates.includes(field)
+    })
+    return valid;
+})
+module.exports={validtateSignup,updatesAllowed}  
